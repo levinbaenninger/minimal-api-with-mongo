@@ -26,7 +26,7 @@ This repository contains a .NET Minimal API project connected to MongoDB. The in
    ```
 
 3. **Access the API:**
-   The API will be available at `http://localhost:5000` (replace `<port>` with the configured port).
+   The API will be available at `http://localhost:5001` (replace `<port>` with the configured port).
 
 4. **Access the Frontend:**
    The React frontend will be available at `http://localhost:3000`

@@ -33,7 +33,7 @@ This repository contains a .NET Minimal API project connected to MongoDB. The in
 
 ## Project Structure
 
-- `src/` - .NET Minimal API source code
+- `api/` - .NET Minimal API source code
 - `frontend/` - React frontend application
 - `docker-compose.yml` - Docker Compose configuration
 

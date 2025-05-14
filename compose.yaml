@@ -1,8 +1,22 @@
 ﻿services:
   api:
     image: api
+    restart: always
+    depends_on:
+      - mongo
     build:
       context: .
       dockerfile: api/Dockerfile
     ports:
       - "5001:5001"
+    environment:
+      - DatabaseSettings__ConnectionString=mongodb://admin:admin@mongo:27017/
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "5002:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=admin

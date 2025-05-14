@@ -5,4 +5,4 @@
       context: .
       dockerfile: api/Dockerfile
     ports:
-      - 5001:5001
+      - "5001:5001"

@@ -11,6 +11,8 @@
       - "5001:5001"
     environment:
       DatabaseSettings__ConnectionString: "mongodb://admin:admin@mongo:27017"
+      DatabaseSettings__DatabaseName: "movies"
+      DatabaseSettings__MoviesCollectionName: "movies"
 
   mongo:
     image: mongo

@@ -1,26 +1,58 @@
-using MongoDB.Driver;
-using Microsoft.Extensions.Options;
 using Api.Settings;
+using Api.Models;
+using Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
+builder.Services.AddSingleton<IMovieService, MongoMovieService>();
 
 var app = builder.Build();
 
-app.MapGet("/check", async (IOptions<DatabaseSettings> options) =>
-{
-    try
+app.MapGet("/api/movies", async (IMovieService movieService) => {
+    return Results.Ok(await movieService.GetAllMoviesAsync());
+});
+
+app.MapGet("/api/movies/{id}", async (IMovieService movieService, string id) => {
+    var movie = await movieService.GetMovieByIdAsync(id);
+
+    if (movie is null)
     {
-        var mongoClient = new MongoClient(options.Value.ConnectionString);
-        var databases = await mongoClient.ListDatabaseNamesAsync();
-        var databaseList = await databases.ToListAsync();
-        return Results.Ok(databaseList);
+        return Results.NotFound();
     }
-    catch (Exception ex)
+
+    return Results.Ok(movie);
+});
+
+app.MapPost("/api/movies", async (IMovieService movieService, Movie movie) => {
+    await movieService.CreateMovieAsync(movie);
+    return Results.Created($"/api/movies/{movie.Id}", movie);
+});
+
+app.MapPut("/api/movies/{id}", async (IMovieService movieService, string id, Movie movie) => {
+    var existingMovie = await movieService.GetMovieByIdAsync(id);
+
+    if (existingMovie is null)
     {
-        return Results.Problem(ex.Message);
+        return Results.NotFound();
     }
+
+    movie.Id = existingMovie.Id;
+
+    await movieService.UpdateMovieAsync(id, movie);
+    return Results.Ok(movie);
+});
+
+app.MapDelete("/api/movies/{id}", async (IMovieService movieService, string id) => {
+    var existingMovie = await movieService.GetMovieByIdAsync(id);
+
+    if (existingMovie is null)
+    {
+        return Results.NotFound();
+    }
+
+    await movieService.DeleteMovieAsync(id);
+    return Results.NoContent();
 });
 
 app.Run();

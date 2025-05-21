@@ -1,13 +1,22 @@
 using Api.Settings;
 using Api.Models;
 using Api.Services;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddOpenApi();
 
 builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("DatabaseSettings"));
 builder.Services.AddSingleton<IMovieService, MongoMovieService>();
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
 
 app.MapGet("/api/movies", async (IMovieService movieService) => {
     return Results.Ok(await movieService.GetAllMoviesAsync());

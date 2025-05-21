@@ -10,13 +10,16 @@
     ports:
       - "5001:5001"
     environment:
-      - DatabaseSettings__ConnectionString=mongodb://admin:admin@mongo:27017/
+      DatabaseSettings__ConnectionString: "mongodb://admin:admin@mongo:27017"
 
   mongo:
     image: mongo
     restart: always
-    ports:
-      - "5002:27017"
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
+    volumes:
+      - minimal-api-with-mongo-db:/data/db
+
+volumes:
+  minimal-api-with-mongo-db:
